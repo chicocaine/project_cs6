@@ -31,9 +31,18 @@ def prepare_data(df):
     for d in (time_df, mem_df):
         d['algorithm'] = d['algorithm'].str.replace(r'_(time_s|rss_kB)$','',regex=True)
 
+    # Droping first pass (warmup run)
+    if 'pass' in time_df.columns:
+        first = time_df['pass'].min()
+        time_df = time_df[time_df['pass'] != first]
+    if 'pass' in mem_df.columns:
+        mem_df = mem_df[mem_df['pass'] != first]
+
     # correctness tracking
     if correct_col in df.columns:
         corr = df[id_vars + [correct_col]].copy().rename(columns={correct_col:'correct'})
+        if 'pass' in corr.columns:
+            corr = corr[corr['pass'] != first]
     else:
         corr = pd.DataFrame(columns=id_vars + ['correct'])
 
@@ -42,7 +51,6 @@ def prepare_data(df):
     mem_df  = mem_df.dropna(subset=['rss_kB'])
 
     # aggregates
-    # per-pass & algorithm (for time/mem vs pass)
     stats_time_pass = time_df.groupby(['pass','algorithm'])['time_s'].mean().reset_index()
     stats_mem_pass  = mem_df.groupby(['pass','algorithm'])['rss_kB'].mean().reset_index()
 
@@ -52,13 +60,15 @@ def prepare_data(df):
 
     # table of raw results
     table = df.copy()
+    if 'pass' in table.columns:
+        table = table[table['pass'] != first]
 
     return time_df, mem_df, stats_time_pass, stats_mem_pass, stats_time_n, stats_mem_n, corr, table
 
 def build_gui(time_df, mem_df, stp, smp, stn, smn, corr, table, dpi):
     root = tk.Tk()
     root.title("Benchmark Visualizer for Matrix Multiplication Algorithms")
-    root.attributes('-zoomed', True)
+    root.attributes('-zoomed', True)  
 
     notebook = ttk.Notebook(root)
     notebook.pack(fill='both', expand=True)

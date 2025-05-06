@@ -285,6 +285,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    printf("Running visualizer.py...\n");
+    if (VERBOSE) printf("Command: %s\n", command);
     int ret = system(command);
     free(command);
     if (ret == -1) {

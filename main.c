@@ -207,9 +207,6 @@ int main(int argc, char *argv[]) {
         printf("CHECK_CORRECTNESS: %d\n", CHECK_CORRECTNESS);
         printf("VERBOSE: %d\n", VERBOSE);
         printf("VISUALIZE: %d\n", VISUALIZE);
-        printf("OUT_BASE: %s\n", OUT_BASE);
-        printf("OUT_EXT: %s\n", OUT_EXT);
-        printf("OUT_FOLDER: %s\n", OUT_FOLDER);
         printf("==========================================\n");
     }
 

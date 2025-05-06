@@ -94,13 +94,13 @@ int main(int argc, char *argv[]) {
         {"memory-disable", no_argument, 0, '2'},
         {"check-correctness", no_argument, 0, '3'},
         {"help", no_argument, 0, 'h'},
-        {"verbose", required_argument, 0, 'v'},
+        {"verbose", no_argument, 0, 'v'},
         {"output", required_argument, 0, 'o'},
         {0, 0, 0, 0}
     };
 
     int opt, idx;
-    while ((opt = getopt_long(argc, argv, "p:w:t:b:nsT:123hv:o:", long_opts, &idx)) != -1) {
+    while ((opt = getopt_long(argc, argv, "p:w:t:b:nsT:123hvo:", long_opts, &idx)) != -1) {
         switch (opt) {
             case 'p': PASSES = atoi(optarg); break;
             case 'w': POWER = atoi(optarg); break;

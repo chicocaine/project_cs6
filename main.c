@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    free(filename); free(OUT_BASE); free(OUT_EXT); free(OUT_FOLDER);
+    free(filename); free(OUT_BASE); free(OUT_EXT);
     
     return 0;
 }

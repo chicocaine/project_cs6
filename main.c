@@ -204,8 +204,8 @@ int main(int argc, char *argv[]) {
     }
 
     srand((unsigned)time(NULL));
-    for (int pass = 0; pass < PASSES; pass++) {
-        printf("Pass: %d/%d\n", pass + 1, PASSES);
+    for (int pass = 0; pass <= PASSES; pass++) {
+        printf("Pass: %d/%d\n", pass, PASSES);
 
         for (int j = 0; j <= POWER; j++) {
             int n = 1 << j;
@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
 
             if (strcmp(OUT_EXT, "json") == 0) {
                 if (!first_record) fprintf(out, ",\n");
-                fprintf(out, "    { \"pass\": %d, \"n\": %d,", pass + 1, n);
+                fprintf(out, "    { \"pass\": %d, \"n\": %d,", pass, n);
                 if (STANDARD) {
                     fprintf(out, " \"standard\": { \"time_s\": %.9f, \"rss_kB\": %ld },", t_std, rss_std);
                 }

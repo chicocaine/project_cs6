@@ -31,18 +31,15 @@ def prepare_data(df):
     for d in (time_df, mem_df):
         d['algorithm'] = d['algorithm'].str.replace(r'_(time_s|rss_kB)$','',regex=True)
 
-    # Droping first pass (warmup run)
-    if 'pass' in time_df.columns:
-        first = time_df['pass'].min()
-        time_df = time_df[time_df['pass'] != first]
-    if 'pass' in mem_df.columns:
-        mem_df = mem_df[mem_df['pass'] != first]
+    # Drop pass 0 entirely
+    time_df = time_df[time_df['pass'] != 0]
+    mem_df  = mem_df[mem_df['pass'] != 0]
 
-    # correctness tracking
+    # correctness tracking (ignore pass 0)
     if correct_col in df.columns:
         corr = df[id_vars + [correct_col]].copy().rename(columns={correct_col:'correct'})
         if 'pass' in corr.columns:
-            corr = corr[corr['pass'] != first]
+            corr = corr[corr['pass'] != 0]
     else:
         corr = pd.DataFrame(columns=id_vars + ['correct'])
 
@@ -58,17 +55,17 @@ def prepare_data(df):
     stats_time_n = time_df.groupby(['n','algorithm'])['time_s'].agg(['mean','std']).reset_index()
     stats_mem_n  = mem_df.groupby(['n','algorithm'])['rss_kB'].agg(['mean','std']).reset_index()
 
-    # table of raw results
+    # table of raw results (exclude pass 0 rows)
     table = df.copy()
     if 'pass' in table.columns:
-        table = table[table['pass'] != first]
+        table = table[table['pass'] != 0]
 
     return time_df, mem_df, stats_time_pass, stats_mem_pass, stats_time_n, stats_mem_n, corr, table
 
 def build_gui(time_df, mem_df, stp, smp, stn, smn, corr, table, dpi):
     root = tk.Tk()
     root.title("Benchmark Visualizer for Matrix Multiplication Algorithms")
-    root.attributes('-zoomed', True)  
+    root.attributes('-zoomed', True) if hasattr(root, 'attributes') else root.state('normal')
 
     notebook = ttk.Notebook(root)
     notebook.pack(fill='both', expand=True)
@@ -148,3 +145,4 @@ if __name__ == '__main__':
     df = load_and_flatten(args.file)
     time_df, mem_df, stp, smp, stn, smn, corr, table = prepare_data(df)
     build_gui(time_df, mem_df, stp, smp, stn, smn, corr, table, dpi=args.window_size)
+    

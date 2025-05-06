@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     int STRASSEN = 0;
     int THREADCOUNT = 1;
     int TIME_DISABLE = 0, MEMORY_DISABLE = 0, CHECK_CORRECTNESS = 0;
-    int VERBOSE = 0, HELP = 0;
+    int VERBOSE = 0, HELP = 0, VISUALIZE = 0;
     char *OUT_BASE = NULL;
     char *OUT_EXT = NULL;
     char *OUT_FOLDER = "results";
@@ -95,12 +95,13 @@ int main(int argc, char *argv[]) {
         {"check-correctness", no_argument, 0, '3'},
         {"help", no_argument, 0, 'h'},
         {"verbose", no_argument, 0, 'v'},
+        {"visualize", no_argument, 0, 'V'},
         {"output", required_argument, 0, 'o'},
         {0, 0, 0, 0}
     };
 
     int opt, idx;
-    while ((opt = getopt_long(argc, argv, "p:w:t:b:nsT:123hvo:", long_opts, &idx)) != -1) {
+    while ((opt = getopt_long(argc, argv, "p:w:t:b:nsT:123hvVo:", long_opts, &idx)) != -1) {
         switch (opt) {
             case 'p': PASSES = atoi(optarg); break;
             case 'w': POWER = atoi(optarg); break;
@@ -113,6 +114,7 @@ int main(int argc, char *argv[]) {
             case '2': MEMORY_DISABLE = 1; break;
             case '3': CHECK_CORRECTNESS = 1; break;
             case 'v': VERBOSE = 1; break;
+            case 'V': VISUALIZE = 1; break;
             case 'h': HELP = 1; break;
             case 'o': {
                 char *arg = strdup(optarg);
@@ -135,7 +137,7 @@ int main(int argc, char *argv[]) {
     if (HELP || argc == 1) {
         printf("Usage: %s\n"
                "  -p passes -w power\n"
-               " [options]\n"
+               "  [options]\n"
                "  -t threshold   use Strassen threshold t[input]>0\n"
                "  -b blocksize   use blocked algorithm b[input]>0\n"
                "  -n standard    runs standard algorithm count\n"
@@ -144,6 +146,9 @@ int main(int argc, char *argv[]) {
                "  -1             disable timing\n"
                "  -2             disable memory logging\n"
                "  -3             check correctness\n"
+               "  -v             verbose output\n"
+               "  -V             visualize results\n"
+               "  -h             help\n"
                "  -o file[.json|.csv|.txt]  output base/name and format\n",
                argv[0]);
         exit(EXIT_SUCCESS);
@@ -292,7 +297,7 @@ int main(int argc, char *argv[]) {
     fclose(out);
     if (VERBOSE) printf("Results written to %s\n", filename);
 
-    if (strcmp(OUT_EXT, "json")==0) {
+    if (VISUALIZE && strcmp(OUT_EXT, "json")==0) {
         size_t buf_size = strlen(filename) + sizeof("python3 visualizer.py --file ") + 1;
         char *command = malloc(buf_size);
         if (!command) {

@@ -235,6 +235,7 @@ int main(int argc, char *argv[]) {
             if (BLOCKSIZE) {
                 memset(Cblk, 0, n*n*sizeof(int));
                 blocked_multiply(A, B, Cblk, n, BLOCKSIZE, THREADCOUNT);
+                memset(Cblk, 0, n*n*sizeof(int));
                 if (!TIME_DISABLE) clock_gettime(CLOCK_MONOTONIC, &t0), blocked_multiply(A, B, Cblk, n, BLOCKSIZE, THREADCOUNT), clock_gettime(CLOCK_MONOTONIC, &t1), t_blk = (t1.tv_sec - t0.tv_sec) + (t1.tv_nsec - t0.tv_nsec)/1e9;
                 if (!MEMORY_DISABLE) rss_blk = getCurrentRSS_kB();
             }

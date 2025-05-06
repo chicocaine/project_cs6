@@ -271,35 +271,37 @@ int main(int argc, char *argv[]) {
     fclose(out);
     if (VERBOSE) printf("Results written to %s\n", filename);
 
-    size_t buf_size = strlen(filename) + sizeof("python3 visualizer.py --file ") + 1;
-    char *command = malloc(buf_size);
-    if (!command) {
-        perror("malloc");
-        return EXIT_FAILURE;
-    }
-
-    int needed = snprintf(command, buf_size, "python3 visualizer.py --file %s", filename);
-    if (needed < 0 || (size_t)needed >= buf_size) {
-        fprintf(stderr, "Formatting error or buffer too small\n");
+    if (strcmp(OUT_EXT, "json")==0) {
+        size_t buf_size = strlen(filename) + sizeof("python3 visualizer.py --file ") + 1;
+        char *command = malloc(buf_size);
+        if (!command) {
+            perror("malloc");
+            return EXIT_FAILURE;
+        }
+    
+        int needed = snprintf(command, buf_size, "python3 visualizer.py --file %s", filename);
+        if (needed < 0 || (size_t)needed >= buf_size) {
+            fprintf(stderr, "Formatting error or buffer too small\n");
+            free(command);
+            return EXIT_FAILURE;
+        }
+    
+        printf("Running visualizer.py...\n");
+        if (VERBOSE) printf("Command: %s\n", command);
+        int ret = system(command);
         free(command);
-        return EXIT_FAILURE;
+        if (ret == -1) {
+            perror("system");
+            return EXIT_FAILURE;
+        }
+        if (WEXITSTATUS(ret) != 0) {
+            fprintf(stderr, "visualizer.py exited with %d\n",
+                    WEXITSTATUS(ret));
+            return EXIT_FAILURE;
+        }
     }
 
-    printf("Running visualizer.py...\n");
-    if (VERBOSE) printf("Command: %s\n", command);
-    int ret = system(command);
-    free(command);
-    if (ret == -1) {
-        perror("system");
-        return EXIT_FAILURE;
-    }
-    if (WEXITSTATUS(ret) != 0) {
-        fprintf(stderr, "visualizer.py exited with %d\n",
-                WEXITSTATUS(ret));
-        return EXIT_FAILURE;
-    }
-
-    free(filename); free(OUT_BASE); free(OUT_EXT);
+    free(filename); free(OUT_BASE); free(OUT_EXT); free(OUT_FOLDER);
     
     return 0;
 }

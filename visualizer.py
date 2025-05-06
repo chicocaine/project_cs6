@@ -38,7 +38,7 @@ def prepare_data(df):
 
 def build_gui(time_df, mem_df, avg_tp, avg_mp, avg_tn, avg_mn, dpi):
     root = tk.Tk()
-    root.wm_title("JSON Benchmark Visualizer")
+    root.wm_title("Benchmark Visualizer for Matrix Multiplication Algorithms")
     notebook = ttk.Notebook(root)
     notebook.pack(fill='both', expand=True)
     passes = sorted(time_df['pass'].unique())
@@ -64,7 +64,7 @@ def build_gui(time_df, mem_df, avg_tp, avg_mp, avg_tn, avg_mn, dpi):
     canvas_time = FigureCanvasTkAgg(fig_time, master=tab1)
     canvas_time.get_tk_widget().pack(fill='both', expand=True)
     NavigationToolbar2Tk(canvas_time, tab1)
-    redraw(fig_time, time_df[time_df['pass']==passes[0]], 'n','time_s', f'Time vs n (pass {passes[0]})','n','Time (s)')
+    redraw(fig_time, time_df[time_df['pass']==passes[0]], 'n','time_s', f'Time vs 2^[n] Matrix Size (pass {passes[0]})','n','Time (s)')
     canvas_time.draw()
     combo_time.bind('<<ComboboxSelected>>', lambda e: (redraw(fig_time, time_df[time_df['pass']==int(combo_time.get())], 'n','time_s', f'Time vs n (pass {combo_time.get()})','n','Time (s)'), canvas_time.draw()))
 
@@ -77,7 +77,7 @@ def build_gui(time_df, mem_df, avg_tp, avg_mp, avg_tn, avg_mn, dpi):
     canvas_mem = FigureCanvasTkAgg(fig_mem, master=tab2)
     canvas_mem.get_tk_widget().pack(fill='both', expand=True)
     NavigationToolbar2Tk(canvas_mem, tab2)
-    redraw(fig_mem, mem_df[mem_df['pass']==passes[0]], 'n','rss_kB', f'Memory vs n (pass {passes[0]})','n','Memory (kB)')
+    redraw(fig_mem, mem_df[mem_df['pass']==passes[0]], 'n','rss_kB', f'Memory vs 2^[n] Matrix Size (pass {passes[0]})','n','Memory (kB)')
     canvas_mem.draw()
     combo_mem.bind('<<ComboboxSelected>>', lambda e: (redraw(fig_mem, mem_df[mem_df['pass']==int(combo_mem.get())], 'n','rss_kB', f'Memory vs n (pass {combo_mem.get()})','n','Memory (kB)'), canvas_mem.draw()))
 
@@ -93,13 +93,13 @@ def build_gui(time_df, mem_df, avg_tp, avg_mp, avg_tn, avg_mn, dpi):
     ax1 = fig_avg_n.add_subplot(121)
     avg_time_pivot = avg_tn.pivot(index='n', columns='algorithm', values='time_s')
     avg_time_pivot.plot(kind='bar', ax=ax1)
-    ax1.set_title('Avg Time vs n')
+    ax1.set_title('Avg Time vs n Matrix Size')
     ax1.set_xlabel('n')
     ax1.set_ylabel('Time (s)')
     ax2 = fig_avg_n.add_subplot(122)
     avg_mem_pivot = avg_mn.pivot(index='n', columns='algorithm', values='rss_kB')
     avg_mem_pivot.plot(kind='bar', ax=ax2)
-    ax2.set_title('Avg Memory vs n')
+    ax2.set_title('Avg Memory vs n Matrix Size')
     ax2.set_xlabel('n')
     ax2.set_ylabel('Memory (kB)')
     fig_avg_n.tight_layout()

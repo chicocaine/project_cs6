@@ -246,19 +246,40 @@ int main(int argc, char *argv[]) {
                 eq = !memcmp(Cstd, (STRASSEN ? Cstr : Cblk), n*n*sizeof(int));
             }
 
-            if (strcmp(OUT_EXT, "json")==0) {
+            if (strcmp(OUT_EXT, "json") == 0) {
                 if (!first_record) fprintf(out, ",\n");
-                fprintf(out, "    { \"pass\": %d, \"n\": %d, \"standard\": { \"time_s\": %.9f, \"rss_kB\": %ld }, \"blocked\": { \"time_s\": %.9f, \"rss_kB\": %ld }, \"strassen\": { \"time_s\": %.9f, \"rss_kB\": %ld }, \"equivalent\": %s }",
-                        pass+1, n, t_std, rss_std, t_blk, rss_blk, t_str, rss_str, eq?"true":"false");
+                fprintf(out, "    { \"pass\": %d, \"n\": %d,", pass + 1, n);
+                if (STANDARD) {
+                    fprintf(out, " \"standard\": { \"time_s\": %.9f, \"rss_kB\": %ld },", t_std, rss_std);
+                }
+                if (BLOCKSIZE) {
+                    fprintf(out, " \"blocked\": { \"time_s\": %.9f, \"rss_kB\": %ld },", t_blk, rss_blk);
+                }
+                if (STRASSEN) {
+                    fprintf(out, " \"strassen\": { \"time_s\": %.9f, \"rss_kB\": %ld },", t_str, rss_str);
+                }
+                fprintf(out, " \"equivalent\": %s }", eq ? "true" : "false");
                 first_record = 0;
             } else if (strcmp(OUT_EXT, "csv")==0) {
-                fprintf(out, "standard,%d,%.9f,%ld,%d\n", n, t_std, rss_std, eq);
-                fprintf(out, "blocked,%d,%.9f,%ld,%d\n", n, t_blk, rss_blk, eq);
-                fprintf(out, "strassen,%d,%.9f,%ld,%d\n", n, t_str, rss_str, eq);
+                if (STANDARD) {
+                    fprintf(out, "standard,%d,%.9f,%ld,%d\n", n, t_std, rss_std, eq);
+                }
+                if (BLOCKSIZE) {
+                    fprintf(out, "blocked,%d,%.9f,%ld,%d\n", n, t_blk, rss_blk, eq);
+                }
+                if (STRASSEN) {
+                    fprintf(out, "strassen,%d,%.9f,%ld,%d\n", n, t_str, rss_str, eq);
+                }
             } else if (strcmp(OUT_EXT, "txt")==0) {
-                fprintf(out, "n=%d standard: time=%.9fs rss=%ldkB eq=%d\n", n, t_std, rss_std, eq);
-                fprintf(out, "n=%d blocked: time=%.9fs rss=%ldkB eq=%d\n", n, t_blk, rss_blk, eq);
-                fprintf(out, "n=%d strassen: time=%.9fs rss=%ldkB eq=%d\n", n, t_str, rss_str, eq);
+                if (STANDARD) {
+                    fprintf(out, "standard: n=%d time=%.9fs rss=%ldkB eq=%d\n", n, t_std, rss_std, eq);
+                }
+                if (BLOCKSIZE) {
+                    fprintf(out, "blocked: n=%d time=%.9fs rss=%ldkB eq=%d\n", n, t_blk, rss_blk, eq);
+                }
+                if (STRASSEN) {
+                    fprintf(out, "strassen: n=%d time=%.9fs rss=%ldkB eq=%d\n", n, t_str, rss_str, eq);
+                }
             }
 
             free(A); free(B);

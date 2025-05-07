@@ -119,7 +119,7 @@ def build_gui(time_df, mem_df, stp, smp, stn, smn, corr, table, dpi):
     text = tk.Text(tab4)
     lines = []
     lines.append('Execution time (mean ± std-dev) across passes:')
-    for _,row in stn.iterrows(): lines.append(f"n={row['n']} / {row['algorithm']}: {row['mean']:.6f} ± {row['std']:.6f} s")
+    for _,row in stn.iterrows(): lines.append(f"n={row['n']} / {row['algorithm']}: {row['mean']:.9f} ± {row['std']:.9f} s")
     lines.append('\nPeak RSS (mean ± std-dev) across passes:')
     for _,row in smn.iterrows(): lines.append(f"n={row['n']} / {row['algorithm']}: {row['mean']:.0f} ± {row['std']:.0f} kB")
     if not corr.empty:

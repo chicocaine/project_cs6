@@ -252,7 +252,14 @@ int main(int argc, char *argv[]) {
             int eq = 1;
             if (CHECK_CORRECTNESS) {
                 if (STANDARD) {
-                    eq = (memcmp(Cstd, STRASSEN ? Cstr : Cblk, n * n * sizeof(int)) == 0);
+                    int eq_blk = 1, eq_str = 1;
+                    if (BLOCKSIZE) {
+                        eq_blk = (memcmp(Cstd, Cblk, n * n * sizeof(int)) == 0);
+                    }
+                    if (STRASSEN) {
+                        eq_str = (memcmp(Cstd, Cstr, n * n * sizeof(int)) == 0);
+                    }
+                    eq = (eq_blk && eq_str);
                 }
                 else if (BLOCKSIZE && STRASSEN) {
                     eq = (memcmp(Cblk, Cstr, n * n * sizeof(int)) == 0);

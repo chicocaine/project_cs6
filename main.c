@@ -251,7 +251,15 @@ int main(int argc, char *argv[]) {
 
             int eq = 1;
             if (CHECK_CORRECTNESS) {
-                eq = !memcmp(Cstd, (STRASSEN ? Cstr : Cblk), n*n*sizeof(int));
+                if (STANDARD) {
+                    eq = (memcmp(Cstd, STRASSEN ? Cstr : Cblk, n * n * sizeof(int)) == 0);
+                }
+                else if (BLOCKSIZE && STRASSEN) {
+                    eq = (memcmp(Cblk, Cstr, n * n * sizeof(int)) == 0);
+                }
+                else {
+                    eq = 1;
+                }
             }
 
             if (strcmp(OUT_EXT, "json") == 0) {

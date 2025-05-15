@@ -37,19 +37,19 @@ To run the project, execute the following sample command:
 ./matrix_mul_benchmark_4.0.exe -p 5 -w 10 -n -s -t 64 -b 16 -v -3 -o output.json
 ```
 To customize the benchmark, add Parameters [options] after the execution:
--p passes -w power
--t threshold   use Strassen threshold t[input]>0
--b blocksize   use blocked algorithm b[input]>0
--n standard    runs standard algorithm count
--s strassen    runs Strassen count
--T threads     set thread count [default: 1]
--1             disable timing
--2             disable memory logging
--3             check correctness
--v             verbose output
--V             visualize results
--h             help\n"
--o file[.json|.csv|.txt] output base/name and format
+* -p passes -w power
+* -t threshold   use Strassen threshold t[input]>0
+* -b blocksize   use blocked algorithm b[input]>0
+* -n standard    runs standard algorithm count
+* -s strassen    runs Strassen count
+* -T threads     set thread count [default: 1]
+* -1             disable timing
+* -2             disable memory logging
+* -3             check correctness
+* -v             verbose output
+* -V             visualize results
+* -h             help\n"
+* -o file[.json|.csv|.txt] output base/name and format
 
 ## Contributing
 Contributions are welcome! Please follow these steps:
